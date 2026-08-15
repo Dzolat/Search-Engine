@@ -11,7 +11,7 @@ void start_search(std::vector<Document>& doc_vector, std::unordered_map<std::str
     std::string phrase;
 
     std::cout << "\nsearch> ";
-    std::cin >> phrase;
+    std::getline(std::cin >> std::ws, phrase);
 
     std::unordered_map<int, int> scores;
     for (const auto &query_word : tokenize(phrase))
