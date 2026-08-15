@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
 {
     std::vector<Document> doc_vector;
     std::unordered_map<std::string, std::unordered_map<int, int>> index;
-    std::filesystem::path directory_path = argv[1];
 
     if (argc != 2)
     {
@@ -51,6 +50,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    std::filesystem::path directory_path = argv[1];
     if (!exists(directory_path))
     {
         std::cout << "The directory doesnt exist.";
