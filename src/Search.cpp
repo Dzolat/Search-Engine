@@ -17,7 +17,7 @@ void start_search(std::vector<Document>& doc_vector, std::unordered_map<std::str
     for (const auto &query_word : tokenize(phrase))
     {
 
-        auto it = index.find(phrase);
+        auto it = index.find(query_word);
 
         if (it == index.end())
         {
