@@ -7,4 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(search
     src/main.cpp
+    src/Tokenizer.cpp
+    src/InvertedIndex.cpp
+    src/Search.cpp
+)
+
+execute_process(
+    COMMAND powershell -Command Remove-Item search.exe; Copy-Item .\\build\\Debug\\search.exe search.exe
 )
