@@ -37,10 +37,10 @@ void start_search(std::vector<Document>& doc_vector, std::unordered_map<std::str
     int counter = 1;
     for (auto result : results)
     {
-        
-        std::cout << "\n" << counter << ". " << doc_vector[result.first].path << "\n   score: " << result.second << "\n";
-        counter++;
         if (counter == 3)
             break;
+        std::cout << "\n" << counter << ". " << doc_vector[result.first].path << "\n   score: " << result.second << "\n";
+        counter++;
+        
     }
 }
