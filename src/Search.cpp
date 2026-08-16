@@ -3,17 +3,18 @@
 #include <algorithm>
 #include <unordered_map>
 
+#include "../include/TF-IDF.hpp"
 #include "../include/Tokenizer.hpp"
 #include "../include/document.hpp"
 
-void start_search(std::vector<Document>& doc_vector, std::unordered_map<std::string, std::unordered_map<int, int>> &index)
+void start_search(std::vector<Document>& doc_vector, std::unordered_map<std::string, std::unordered_map<int, double>> &index)
 {
     std::string phrase;
 
     std::cout << "\nsearch> ";
     std::getline(std::cin >> std::ws, phrase);
 
-    std::unordered_map<int, int> scores;
+    std::unordered_map<int, double> scores;
     for (const auto &query_word : tokenize(phrase))
     {
 

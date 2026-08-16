@@ -11,38 +11,12 @@
 #include "../include/Tokenizer.hpp"
 #include "../include/Search.hpp"
 
-int get_documents(const std::filesystem::path &directory_path, std::vector<Document> &doc_vector)
-{
-    using namespace std::filesystem;
-    int counter = 0;
-    for (const auto &entry : recursive_directory_iterator(directory_path))
-    {
-        if (!entry.is_regular_file())
-        {
-            continue;
-        }
-
-        auto path = entry.path();
-
-        std::ifstream file{path};
-
-        if (!file)
-        {
-            continue;
-        }
-
-        std::string file_content{std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
-
-        doc_vector.push_back(Document{counter, path.string(), file_content});
-        counter++;
-    }
-    return counter;
-}
+int get_documents(const std::filesystem::path &directory_path, std::vector<Document> &doc_vector);
 
 int main(int argc, char *argv[])
 {
     std::vector<Document> doc_vector;
-    std::unordered_map<std::string, std::unordered_map<int, int>> index;
+    std::unordered_map<std::string, std::unordered_map<int, double>> index;
 
     if (argc != 2)
     {
@@ -74,4 +48,32 @@ int main(int argc, char *argv[])
     {
         start_search(doc_vector, index);
     }
+}
+
+int get_documents(const std::filesystem::path &directory_path, std::vector<Document> &doc_vector)
+{
+    using namespace std::filesystem;
+    int counter = 0;
+    for (const auto &entry : recursive_directory_iterator(directory_path))
+    {
+        if (!entry.is_regular_file())
+        {
+            continue;
+        }
+
+        auto path = entry.path();
+
+        std::ifstream file{path};
+
+        if (!file)
+        {
+            continue;
+        }
+
+        std::string file_content{std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
+
+        doc_vector.push_back(Document{counter, path.string(), file_content});
+        counter++;
+    }
+    return counter;
 }
