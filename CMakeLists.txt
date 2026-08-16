@@ -10,6 +10,7 @@ add_executable(search
     src/Tokenizer.cpp
     src/InvertedIndex.cpp
     src/Search.cpp
+    src/TF-IDF.cpp
 )
 
 execute_process(

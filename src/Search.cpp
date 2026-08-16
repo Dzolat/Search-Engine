@@ -7,7 +7,7 @@
 #include "../include/Tokenizer.hpp"
 #include "../include/document.hpp"
 
-void start_search(std::vector<Document>& doc_vector, std::unordered_map<std::string, std::unordered_map<int, double>> &index)
+void start_search(std::vector<Document> &doc_vector, std::unordered_map<std::string, std::unordered_map<int, double>> &index)
 {
     std::string phrase;
 
@@ -27,7 +27,8 @@ void start_search(std::vector<Document>& doc_vector, std::unordered_map<std::str
 
         for (const auto &[document_id, frequency] : it->second)
         {
-            scores[document_id] += frequency;
+            double tf_idf = get_tf(query_word, doc_vector[document_id]) * get_idf(query_word, doc_vector, index);
+            scores[document_id] += tf_idf;
         }
     }
 
@@ -35,13 +36,12 @@ void start_search(std::vector<Document>& doc_vector, std::unordered_map<std::str
     std::sort(results.begin(), results.end(), [](const auto &a, const auto &b)
               { return a.second > b.second; });
 
-    int counter = 1;
+    int counter = 0;
     for (auto result : results)
     {
         if (counter == 3)
             break;
-        std::cout << "\n" << counter << ". " << doc_vector[result.first].path << "\n   score: " << result.second << "\n";
-        counter++;
-        
+        std::cout << "\n"
+                  << counter++ << ". " << doc_vector[result.first].path << "\n   score: " << result.second << "\n";
     }
 }
