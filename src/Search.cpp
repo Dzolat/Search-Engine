@@ -7,12 +7,14 @@
 #include "../include/Tokenizer.hpp"
 #include "../include/document.hpp"
 
-void start_search(std::vector<Document> &doc_vector, std::unordered_map<std::string, std::unordered_map<int, double>> &index)
+bool start_search(std::vector<Document> &doc_vector, std::unordered_map<std::string, std::unordered_map<int, double>> &index)
 {
     std::string phrase;
 
     std::cout << "\nsearch> ";
-    std::getline(std::cin >> std::ws, phrase);
+
+    if (!std::getline(std::cin >> std::ws, phrase))
+        return false;
 
     std::unordered_map<int, double> scores;
     for (const auto &query_word : tokenize(phrase))
@@ -44,4 +46,6 @@ void start_search(std::vector<Document> &doc_vector, std::unordered_map<std::str
         std::cout << "\n"
                   << counter++ << ". " << doc_vector[result.first].path << "\n   score: " << result.second << "\n";
     }
+
+    return true;
 }

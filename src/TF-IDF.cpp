@@ -25,5 +25,8 @@ double get_idf(std::string term, std::vector<Document> &doc_vector, std::unorder
     auto indexed_term = index.find(term);
     if (indexed_term == index.end())
         return 0.0;
-    return std::log(doc_vector.size() / indexed_term->second.size());
+
+    const double document_count = static_cast<double>(doc_vector.size());
+    const double document_frequency = static_cast<double>(indexed_term->second.size());
+    return std::log(document_count / document_frequency);
 }

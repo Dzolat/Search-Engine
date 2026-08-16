@@ -4,7 +4,7 @@
 #include <sstream>
 #include <cctype>
 
-#include "../include/tokenizer.hpp"
+#include "../include/Tokenizer.hpp"
 
 std::vector<std::string> tokenize(const std::string& text)
 {
@@ -13,7 +13,7 @@ std::vector<std::string> tokenize(const std::string& text)
     for (int index = 0, length = text.size(); index < length; index++)
     {
         if (std::isalnum(text[index]))
-            cleaned += std::tolower(text[index]);
+            cleaned += static_cast<char>(std::tolower(text[index]));
         else
             cleaned += ' ';
     }
