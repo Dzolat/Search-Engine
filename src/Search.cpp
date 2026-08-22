@@ -2,19 +2,21 @@
 #include <string>
 #include <algorithm>
 #include <unordered_map>
+#include <vector>
+#include <optional>
 
-#include "../include/TF-IDF.hpp"
+#include "../include/BM25.hpp"
 #include "../include/Tokenizer.hpp"
 #include "../include/document.hpp"
 
-std::vector<std::pair<int, double>> start_search(std::vector<Document> &doc_vector, std::unordered_map<std::string, std::unordered_map<int, double>> &index)
+std::optional<std::vector<std::pair<int, double>>> start_search(std::vector<Document> &doc_vector, std::unordered_map<std::string, std::unordered_map<int, double>> &index, double average_document_length)
 {
     std::string phrase;
 
     std::cout << "\nsearch> ";
 
     if (!std::getline(std::cin >> std::ws, phrase))
-        return std::vector<std::pair<int, double>> {};
+        return std::nullopt;
 
     std::unordered_map<int, double> scores;
     for (const auto &query_word : tokenize(phrase))
@@ -29,9 +31,10 @@ std::vector<std::pair<int, double>> start_search(std::vector<Document> &doc_vect
 
         for (const auto &[document_id, frequency] : it->second)
         {
-            double tf = get_tf(frequency, doc_vector[document_id].token_count);
-            double idf = get_idf(query_word, doc_vector, index);
-            double ranking = tf * idf;
+            double document_length{static_cast<double>(doc_vector[document_id].token_count)};
+            double document_count{static_cast<double>(doc_vector.size())};
+            double document_frequency{static_cast<double>(it->second.size())};
+            double ranking{bm25(frequency, document_length, average_document_length, document_count, document_frequency)};
             scores[document_id] += ranking;
         }
     }
