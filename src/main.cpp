@@ -55,11 +55,12 @@ int main(int argc, char *argv[])
         total_tokens += tokens;
     }
 
+    double average_length = static_cast<double>(total_tokens) / total_documents;
     std::cout << "Indexed " << total_documents << " documents\n";
     std::cout << "Indexed " << total_tokens << " tokens\n";
     while (true)
     {
-        auto search_info = start_search(doc_vector, index);
+        auto search_info = start_search(doc_vector, index, average_length);
         if (!search_info)
             break;
         print_results(doc_vector, *search_info);
@@ -81,61 +82,48 @@ void print_results(std::vector<Document> &doc_vector, std::vector<std::pair<int,
     return;
 }
 
+std::optional<std::string> load_text_file(const std::filesystem::path &path)
+{
+    const auto extension = path.extension().string();
+
+    if (extension != ".txt" && extension != ".md")
+        return std::nullopt;
+
+    std::error_code error;
+    const auto size = std::filesystem::file_size(path, error);
+
+    if (error || size > Constants::MAX_FILE_SIZE)
+        return std::nullopt;
+
+    std::ifstream file(path, std::ios::binary);
+    if (!file)
+        return std::nullopt;
+
+    std::string content{
+        std::istreambuf_iterator<char>(file),
+        std::istreambuf_iterator<char>()
+    };
+
+    if (content.find('\0') != std::string::npos)
+        return std::nullopt;
+
+    return content;
+}
+
 int get_documents(const std::filesystem::path &directory_path, std::vector<Document> &doc_vector)
 {
     using namespace std::filesystem;
     int counter = 0;
 
-    auto validate_file = [](const auto &entry)
-    {
-        static std::vector<std::string> allowed_extensions{
-            ".md",
-            ".txt"};
-
-        std::ifstream file(entry.path(), std::ios::binary);
-        std::string extension = entry.path().extension().string();
-
-        if (!file)
-            return false;
-
-        if (!entry.is_regular_file())
-            return false;    
-
-        if (std::find(allowed_extensions.begin(), allowed_extensions.end(), extension) == allowed_extensions.end())
-            return false;
-
-        if (file_size(entry) > Constants::MAX_FILE_SIZE)
-            return false;
-
-        char byte;
-        while (file.get(byte))
-        {
-            if (byte == '\0')
-                return false;
-        }
-
-        return true;
-    };
-
     for (const auto &entry : recursive_directory_iterator(directory_path, directory_options::skip_permission_denied))
     {
-        if (!validate_file(entry))
-        {
-            continue;
-        }
-
         auto path = entry.path();
+        auto file_content { load_text_file(path) };
 
-        std::ifstream file{path};
-
-        if (!file)
-        {
+        if (!file_content)
             continue;
-        }
 
-        std::string file_content{std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
-
-        doc_vector.push_back(Document{counter, path.string(), file_content});
+        doc_vector.push_back(Document{counter, path.string(), *file_content});
         counter++;
     }
     return counter;
