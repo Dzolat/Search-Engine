@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     std::filesystem::path directory_path = argv[1];
     if (!exists(directory_path) or !std::filesystem::is_directory(directory_path))
     {
-        std::cout << "The directory doesnt exist.";
+        std::cout << "The directory doesn't exist.";
         return 2;
     }
 
@@ -43,8 +43,16 @@ int main(int argc, char *argv[])
 
     std::cout << "Indexed " << total_documents << " documents\n";
     std::cout << "Indexed " << total_tokens << " tokens\n";
+    while (true)
+    {
+        auto search_info = start_search(doc_vector, index);
+        for (int index = 0; index < 3; index++)
+        {
+            int counter = 0;
 
-    while (!start_search(doc_vector, index));
+            std::cout << "\n" << index << ". " << doc_vector[search_info[index].first].path << "\n   score: " << search_info[index].second << "\n";
+        }
+    }
 }
 
 int get_documents(const std::filesystem::path &directory_path, std::vector<Document> &doc_vector)
