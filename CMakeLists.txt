@@ -12,7 +12,3 @@ add_executable(search
     src/Search.cpp
     src/TF-IDF.cpp
 )
-
-execute_process(
-    COMMAND powershell -Command Remove-Item search.exe; Copy-Item .\\build\\Debug\\search.exe search.exe
-)
