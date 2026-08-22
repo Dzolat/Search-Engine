@@ -12,8 +12,9 @@ std::vector<std::string> tokenize(const std::string& text)
 
     for (int index = 0, length = text.size(); index < length; index++)
     {
-        if (std::isalnum(text[index]))
-            cleaned += static_cast<char>(std::tolower(text[index]));
+        unsigned char character = static_cast<unsigned char>(text[index]);
+        if (std::isalnum(character))
+            cleaned += std::tolower(character);
         else
             cleaned += ' ';
     }

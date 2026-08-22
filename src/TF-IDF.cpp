@@ -6,18 +6,9 @@
 #include "../include/document.hpp"
 #include "../include/Tokenizer.hpp"
 
-double get_tf(std::string term, const Document &doc)
+double get_tf(double frequency, double token_count)
 {
-    double totalTerm = 0;
-    auto tokens = tokenize(doc.content);
-    for (const auto &s : tokens)
-    {
-        if (s == term)
-            totalTerm++;
-    }
-    if (tokens.size() == 0)
-        return 0.0;
-    return totalTerm / tokens.size();
+    return frequency / token_count;
 }
 
 double get_idf(std::string term, std::vector<Document> &doc_vector, std::unordered_map<std::string, std::unordered_map<int, double>> &index)

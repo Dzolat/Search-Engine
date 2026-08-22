@@ -29,16 +29,15 @@ std::vector<std::pair<int, double>> start_search(std::vector<Document> &doc_vect
 
         for (const auto &[document_id, frequency] : it->second)
         {
-            double tf_idf = get_tf(query_word, doc_vector[document_id]) * get_idf(query_word, doc_vector, index);
-            scores[document_id] += tf_idf;
+            double tf = get_tf(frequency, doc_vector[document_id].token_count);
+            double idf = get_idf(query_word, doc_vector, index);
+            double ranking = tf * idf;
+            scores[document_id] += ranking;
         }
     }
 
     std::vector<std::pair<int, double>> results(scores.begin(), scores.end());
     std::sort(results.begin(), results.end(), [](const auto &a, const auto &b)
               { return a.second > b.second; });
-
-    
-
     return results;
 }
